@@ -33,7 +33,7 @@ echo           [*] O P S B R A I N  -  M E N U
 echo    Multi-Agent Enterprise Operations & Optimization
 echo ================================================================
 echo.
-echo   [1] Run All Tests (pytest 88 tests)
+echo   [1] Run All Tests (pytest 95 tests)
 echo   [2] Run Code Quality Check (ruff lint)
 echo   [3] Quickstart Demo (Database Connection Pool Incident)
 echo   [4] IT System Outage Scenario (Full 5-Stage Multi-Agent)
@@ -42,12 +42,13 @@ echo   [6] Workflow Delay Scenario (Invoice SLA Approval Optimization)
 echo   [7] Run All 4 Operational Scenarios in Sequence
 echo   [8] Run OpsBrain CLI Pipeline (Offline Mock Mode)
 echo   [9] List LLM Providers & Connectivity Status
+echo   [R] Real-World Enterprise Data Demo ("What You Can Get")
 echo   [U] Launch Organizational Graph UI (Web Browser)
 echo   [C] Generate Default Config File (configs/default.yaml)
 echo   [0] Exit
 echo.
 echo ================================================================
-set /p "CHOICE=Enter selection [0-9, U, C]: "
+set /p "CHOICE=Enter selection [0-9, R, U, C]: "
 
 if "%CHOICE%"=="1" goto opt_test
 if "%CHOICE%"=="2" goto opt_lint
@@ -58,6 +59,7 @@ if "%CHOICE%"=="6" goto opt_workflow
 if "%CHOICE%"=="7" goto opt_all_scenarios
 if "%CHOICE%"=="8" goto opt_cli_mock
 if "%CHOICE%"=="9" goto opt_providers
+if /i "%CHOICE%"=="r" goto opt_realdata
 if /i "%CHOICE%"=="u" goto opt_ui
 if /i "%CHOICE%"=="c" goto opt_config
 if "%CHOICE%"=="0" goto opt_exit
@@ -160,6 +162,15 @@ echo.
 pause
 goto menu
 
+:opt_realdata
+cls
+echo [*] Running Real-World Enterprise Data Demo ("What You Can Get")...
+echo.
+%PY% examples/real_data_pipeline_demo.py
+echo.
+pause
+goto menu
+
 :opt_ui
 cls
 echo [*] Launching OpsBrain Enterprise Organizational Graph UI...
@@ -248,6 +259,16 @@ if /i "%CMD%"=="scenarios" (
     exit /b 0
 )
 
+if /i "%CMD%"=="realdata" (
+    %PY% examples/real_data_pipeline_demo.py !EXTRA_ARGS!
+    exit /b !errorlevel!
+)
+
+if /i "%CMD%"=="real-data" (
+    %PY% examples/real_data_pipeline_demo.py !EXTRA_ARGS!
+    exit /b !errorlevel!
+)
+
 if /i "%CMD%"=="providers" (
     %RUNNER% opsbrain providers list !EXTRA_ARGS!
     exit /b !errorlevel!
@@ -266,6 +287,7 @@ if /i "%CMD%"=="help" (
     echo   run.bat test               Run pytest test suite
     echo   run.bat lint               Run ruff linting
     echo   run.bat demo               Run quickstart example
+    echo   run.bat realdata           Run real-world data demo ("What You Can Get")
     echo   run.bat scenarios          Run all 4 operational scenarios
     echo   run.bat it                 Run IT outage scenario
     echo   run.bat supply             Run supply chain scenario

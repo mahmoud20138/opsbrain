@@ -1,0 +1,57 @@
+{
+  "incident_metadata": {
+    "title": "Black Friday Checkout Outage & Database Connection Pool Saturation",
+    "incident_id": "INC-2026-0906-8821",
+    "source_system": "checkout-api-gateway",
+    "affected_services": ["checkout-service", "cart-service", "payment-service", "inventory-db"],
+    "business_impact": "Loss of ~$42,000 ARR per minute during promotional flash sale",
+    "timestamp": "2026-09-06T18:42:15Z",
+    "environment": "production-us-east-1",
+    "severity": "critical"
+  },
+  "metrics": {
+    "http_504_error_rate_pct": 34.8,
+    "http_p99_latency_ms": 14850,
+    "http_p50_latency_ms": 3200,
+    "active_db_connections": 298,
+    "max_db_connection_pool": 300,
+    "db_waiting_threads_count": 842,
+    "redis_memory_utilization_pct": 98.4,
+    "redis_evicted_keys_per_sec": 4250,
+    "cart_abandonment_rate_pct": 68.4,
+    "payment_gateway_success_rate_pct": 62.1
+  },
+  "logs": [
+    "2026-09-06T18:41:52.124Z [nginx-ingress] 10.0.4.12 - - [06/Sep/2026:18:41:52 +0000] \"POST /v2/checkout/process HTTP/2.0\" 504 182 \"https://store.acme.com/checkout\" \"Mozilla/5.0\" upstream_response_time 15.002",
+    "2026-09-06T18:41:55.340Z [cart-service] ERROR c.a.c.service.CheckoutProcessor - java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30005ms (total=300, active=298, idle=2, waiting=842)",
+    "2026-09-06T18:41:58.891Z [postgres-primary] FATAL: remaining connection slots are reserved for non-replication superuser connections (max_connections=300)",
+    "2026-09-06T18:42:01.452Z [redis-cluster-0] WARNING: memory usage 15.8GB exceeds maxmemory (16.0GB). Evicting keys using volatile-lru policy at 4250 keys/sec",
+    "2026-09-06T18:42:05.109Z [payment-service] WARN c.a.p.client.StripeAdapter - Upstream HTTP timeout after 10000ms waiting for checkout payload confirmation",
+    "2026-09-06T18:42:10.822Z [checkout-service] ERROR c.a.c.controller.OrderController - Circuit breaker 'DatabaseWriter' tripped from CLOSED to OPEN state after 5 consecutive timeout failures"
+  ],
+  "alerts": [
+    {
+      "id": "PD-ALERT-883921",
+      "title": "Critical: Checkout API 504 Gateway Timeout Rate > 30%",
+      "severity": "critical",
+      "affected_systems": ["checkout-service", "cart-service"],
+      "triggered_at": "2026-09-06T18:42:00Z",
+      "threshold": "> 5.0%",
+      "current_value": "34.8%"
+    },
+    {
+      "id": "PD-ALERT-883922",
+      "title": "Critical: Postgres Connection Pool Exhausted (298/300 active)",
+      "severity": "critical",
+      "affected_systems": ["inventory-db"],
+      "triggered_at": "2026-09-06T18:42:05Z",
+      "threshold": "> 90% capacity",
+      "current_value": "99.3% capacity"
+    }
+  ],
+  "runbooks": [
+    "Runbook 401: Scaling RDS Connection Pools via PgBouncer",
+    "Runbook 112: Emergency Rolling Restart of Checkout Microservices",
+    "Runbook 808: Circuit Breaker Reset & Redis Cache Flush Strategy"
+  ]
+}

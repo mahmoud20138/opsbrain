@@ -1,0 +1,53 @@
+{
+  "incident_metadata": {
+    "title": "FinTech SWIFT Wire Clearing Delay & Kafka Consumer Backpressure",
+    "incident_id": "INC-2026-0906-9904",
+    "source_system": "core-banking-settlement-engine",
+    "affected_services": ["clearing-service", "kafka-settlement-cluster", "aml-sanctions-screener", "fedwire-gateway"],
+    "business_impact": "$14.2M intraday settlement exposure at risk of Fedwire closing window breach",
+    "timestamp": "2026-09-06T19:15:00Z",
+    "environment": "production-us-east-2",
+    "severity": "critical"
+  },
+  "metrics": {
+    "kafka_consumer_lag_messages": 142500,
+    "wire_settlement_duration_seconds": 840,
+    "wire_settlement_sla_seconds": 120,
+    "aml_sanctions_hold_queue_depth": 4820,
+    "aml_manual_queue_sla_breach_pct": 28.4,
+    "fedwire_ack_timeout_rate_pct": 18.2,
+    "jvm_heap_utilization_pct": 94.6,
+    "jvm_gc_pause_duration_ms": 4200
+  },
+  "logs": [
+    "2026-09-06T19:14:12.890Z [kafka-consumer-wire-03] WARN o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=settlement-worker-03] Consumer poll timeout exceeded (max.poll.interval.ms=300000). Marking partition as stalled.",
+    "2026-09-06T19:14:25.102Z [aml-screener] ERROR c.f.a.scanner.OfacBatchProcessor - OutOfMemoryError: Metaspace / GC overhead limit exceeded during concurrent batch parsing of 4800 ISO-20022 wire manifests.",
+    "2026-09-06T19:14:38.441Z [settlement-service] CRITICAL c.f.s.engine.SettlementOrchestrator - SLA Breach: Fedwire wire transfer batch #90482 pending acknowledgment for 840s (SLA: 120s).",
+    "2026-09-06T19:14:50.009Z [fedwire-gateway] ERROR c.f.f.client.FedACHAdapter - SocketTimeoutException reading response ACK from Federal Reserve Gateway socket (60000ms timeout)."
+  ],
+  "alerts": [
+    {
+      "id": "PD-ALERT-990401",
+      "title": "Critical: Kafka Consumer Lag Exceeds 100k Messages on payment.clearing.v1",
+      "severity": "critical",
+      "affected_systems": ["clearing-service", "kafka-settlement-cluster"],
+      "triggered_at": "2026-09-06T19:14:15Z",
+      "threshold": "> 5000 messages",
+      "current_value": "142,500 messages"
+    },
+    {
+      "id": "PD-ALERT-990402",
+      "title": "High: AML Sanctions Queue Memory Pressure (94.6% Heap)",
+      "severity": "high",
+      "affected_systems": ["aml-sanctions-screener"],
+      "triggered_at": "2026-09-06T19:14:30Z",
+      "threshold": "> 85% heap",
+      "current_value": "94.6% heap"
+    }
+  ],
+  "runbooks": [
+    "Runbook 220: Rebalancing Kafka Consumer Partitions",
+    "Runbook 310: Scaling AML Sanctions Worker Pods",
+    "Runbook 704: Federal Reserve Gateway Connection Cycling"
+  ]
+}

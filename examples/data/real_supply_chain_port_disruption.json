@@ -1,0 +1,52 @@
+{
+  "incident_metadata": {
+    "title": "Global Port Congestion & Semiconductor Component SKU-774 Stockout",
+    "incident_id": "INC-2026-0906-7740",
+    "source_system": "global-logistics-erp",
+    "affected_services": ["port-logistics", "procurement-engine", "assembly-plant-1", "erp-mrp-planner"],
+    "business_impact": "Assembly line halt across 3 automotive electronics plants within 48 hours",
+    "timestamp": "2026-09-06T14:30:00Z",
+    "environment": "production-supply-chain",
+    "severity": "high"
+  },
+  "metrics": {
+    "port_dwell_time_days": 16.4,
+    "port_dwell_time_baseline_days": 3.2,
+    "shipping_container_inbound_backlog_teu": 420,
+    "microcontroller_sku774_inventory_days": 1.2,
+    "microcontroller_sku774_safety_stock_days": 15.0,
+    "plant_line_stoppage_risk_probability": 0.92,
+    "expedited_air_freight_cost_variance_usd": 1850000
+  },
+  "logs": [
+    "2026-09-06T14:28:10Z [port-telematics] Port of Long Beach Terminal 4 reports crane labor shortage; berth delay increased to 16.4 days.",
+    "2026-09-06T14:28:45Z [erp-mrp-engine] CRITICAL: BOM item SKU-774 (Microcontroller MCU-32) projected negative inventory in 36 hours at Detroit Plant #1.",
+    "2026-09-06T14:29:12Z [customs-broker] ALERT: Container vessel 'Ever Horizon' anchored offshore with 420 TEU auto parts under customs hold.",
+    "2026-09-06T14:29:55Z [procure-agent] SCM Notice: Tier-2 backup supplier in Taiwan has 8,000 units available for emergency air-freight charter."
+  ],
+  "alerts": [
+    {
+      "id": "PD-ALERT-77401",
+      "title": "Critical: Port Dwell Time Exceeds 16 Days for Container Shipment #US-774",
+      "severity": "critical",
+      "affected_systems": ["port-logistics", "assembly-plant-1"],
+      "triggered_at": "2026-09-06T14:28:15Z",
+      "threshold": "> 5.0 days",
+      "current_value": "16.4 days"
+    },
+    {
+      "id": "PD-ALERT-77402",
+      "title": "Critical: SKU-774 Safety Stock Inversion (1.2 days remaining vs 15.0 day SLA)",
+      "severity": "critical",
+      "affected_systems": ["procurement-engine"],
+      "triggered_at": "2026-09-06T14:29:00Z",
+      "threshold": "< 5.0 days",
+      "current_value": "1.2 days"
+    }
+  ],
+  "runbooks": [
+    "Runbook SCM-401: Emergency Air Freight Charter Activation",
+    "Runbook SCM-512: Secondary Tier-2 Sourcing Split Allocation",
+    "Runbook MFG-102: Assembly Line Rebalancing to Alternate Product SKU"
+  ]
+}

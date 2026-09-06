@@ -1,0 +1,6 @@
+timestamp,port_code,vessel_name,dwell_time_days,backlog_teu,sku_id,inventory_days_left,line_stoppage_risk
+2026-09-06T10:00:00Z,USLAX,Ever Horizon,14.8,380,SKU-774,2.5,0.72
+2026-09-06T11:00:00Z,USLAX,Ever Horizon,15.2,400,SKU-774,2.1,0.78
+2026-09-06T12:00:00Z,USLAX,Ever Horizon,15.7,410,SKU-774,1.8,0.85
+2026-09-06T13:00:00Z,USLAX,Ever Horizon,16.1,415,SKU-774,1.4,0.89
+2026-09-06T14:00:00Z,USLAX,Ever Horizon,16.4,420,SKU-774,1.2,0.92
