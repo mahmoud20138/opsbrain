@@ -1,0 +1,80 @@
+# OpsBrain Default Configuration
+# ================================
+# Copy this file and customize for your environment.
+
+log_level: INFO
+data_dir: .opsbrain
+
+# ----- LLM Providers -----
+# Set API keys via environment variables:
+#   export OPENAI_API_KEY="sk-..."
+#   export ANTHROPIC_API_KEY="sk-ant-..."
+#   export GEMINI_API_KEY="..."
+
+providers:
+  openai:
+    enabled: true
+    default_model: gpt-4o
+    max_retries: 3
+    timeout_seconds: 60
+
+  gemini:
+    enabled: true
+    default_model: gemini-2.5-flash
+    max_retries: 3
+    timeout_seconds: 60
+
+  anthropic:
+    enabled: true
+    default_model: claude-sonnet-4-20250514
+    max_retries: 3
+    timeout_seconds: 60
+
+  ollama:
+    enabled: true
+    default_model: llama3.1
+    api_base: http://localhost:11434
+    timeout_seconds: 120
+
+  litellm:
+    enabled: true
+    default_model: gpt-4o
+
+# ----- Routing -----
+routing:
+  default_provider: openai
+  default_model: ""
+  fallback_chain:
+    - openai
+    - anthropic
+    - ollama
+  rules: []
+  # Example rules:
+  # rules:
+  #   - pattern: "rca"
+  #     provider: anthropic
+  #     model: claude-sonnet-4-20250514
+  #     priority: 10
+  #   - pattern: "monitor"
+  #     provider: ollama
+  #     model: llama3.1
+  #     priority: 5
+
+# ----- Guardrails -----
+guardrails:
+  max_cost_per_request_usd: 1.0
+  max_cost_per_hour_usd: 10.0
+  max_tokens_per_request: 16000
+  pii_detection_enabled: true
+  blocked_patterns: []
+
+# ----- Telemetry -----
+telemetry:
+  enabled: true
+  log_requests: false
+  log_usage: true
+
+# ----- Storage -----
+storage:
+  backend: sqlite
+  connection_string: "sqlite:///opsbrain.db"

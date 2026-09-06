@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpsBrain — Enterprise Organizational Hierarchy & Analytical Frameworks</title>
+  <meta name="description" content="Adaptable enterprise organizational hierarchy mapping, cross-team structural relationships, and analytical framework touchpoint visualization for any industry.">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <!-- 1. App Header & Navigation Controls -->
+  <header class="app-header">
+    <div class="brand-group">
+      <span class="brand-badge">OPSBRAIN</span>
+      <h1 class="brand-title">Enterprise Organizational & Framework Graph</h1>
+    </div>
+
+    <div class="header-controls">
+      <!-- Industry Blueprint Selector -->
+      <div class="control-group">
+        <label for="industry-select" class="control-label">Industry:</label>
+        <select id="industry-select" class="select-input">
+          <!-- Populated dynamically via JS -->
+        </select>
+      </div>
+
+      <!-- Graph Layout Mode -->
+      <div class="control-group">
+        <label for="layout-select" class="control-label">Layout:</label>
+        <select id="layout-select" class="select-input">
+          <option value="hierarchical">Hierarchical (Tree)</option>
+          <option value="flow">Process Flow (Swimlane)</option>
+          <option value="force">Network Clustering (Force)</option>
+          <option value="concentric">Concentric Radar (Tiers)</option>
+        </select>
+      </div>
+
+      <!-- Analytical Framework Filter -->
+      <div class="control-group">
+        <label for="framework-select" class="control-label">Framework:</label>
+        <select id="framework-select" class="select-input">
+          <!-- Populated dynamically via JS -->
+        </select>
+      </div>
+
+      <!-- Real-time Search -->
+      <div class="search-wrapper">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="search-input" class="text-input search-input" placeholder="Search departments, KPIs..." />
+      </div>
+
+      <!-- Live Simulation Toggle -->
+      <button class="btn btn-primary active" id="btn-toggle-sim">
+        <span class="sim-pulse-dot"></span> Live Telemetry: ON
+      </button>
+
+      <!-- Export Menu -->
+      <button class="btn" id="btn-export-svg" title="Export current graph as SVG">Export SVG</button>
+      <button class="btn" id="btn-export-json" title="Export architecture as JSON">Export JSON</button>
+    </div>
+  </header>
+
+  <!-- 2. Blueprint Subheader & Aggregated Telemetry -->
+  <div class="subheader-strip">
+    <div class="blueprint-meta">
+      <span class="blueprint-title" id="blueprint-title">Loading Blueprint...</span>
+      <span class="blueprint-desc" id="blueprint-desc"></span>
+    </div>
+
+    <div class="stats-group">
+      <div class="stat-item">
+        <span>Departments:</span>
+        <span class="stat-val" id="stat-departments">0</span>
+      </div>
+      <div class="stat-item">
+        <span>Total Staff:</span>
+        <span class="stat-val" id="stat-headcount">0</span>
+      </div>
+      <div class="stat-item">
+        <span>Active Touchpoints:</span>
+        <span class="stat-val" id="stat-touchpoints">0</span>
+      </div>
+      <div class="stat-item">
+        <span>System Health:</span>
+        <span class="stat-val" id="stat-health">Optimal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Interactive Graph Viewport Canvas -->
+  <main class="app-main" id="graph-viewport">
+    <svg id="graph-svg" class="graph-svg"></svg>
+
+    <!-- Floating Zoom & Reset Controls -->
+    <div class="floating-controls">
+      <button class="ctrl-btn" id="btn-zoom-in" title="Zoom In">+</button>
+      <button class="ctrl-btn" id="btn-zoom-out" title="Zoom Out">&minus;</button>
+      <button class="ctrl-btn" id="btn-fit-view" title="Fit to View">&#x2922;</button>
+      <button class="ctrl-btn" id="btn-reset-zoom" title="Reset View">&#x21bb;</button>
+    </div>
+
+    <!-- Structural Relationship Legend -->
+    <div class="legend-strip">
+      <div class="legend-item">
+        <div class="legend-line line-hierarchy"></div>
+        <span>Hierarchy (Reports To)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line line-dataflow"></div>
+        <span>Data & Telemetry Flow</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line line-escalation"></div>
+        <span>SLA Escalation Path</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line line-governance"></div>
+        <span>Governance & Policy</span>
+      </div>
+    </div>
+
+    <!-- Minimap Preview Canvas -->
+    <div class="minimap-wrapper">
+      <canvas id="minimap-canvas" class="minimap-canvas" width="160" height="100"></canvas>
+    </div>
+
+    <!-- Interactive Tooltip Overlay -->
+    <div id="graph-tooltip" class="graph-tooltip"></div>
+  </main>
+
+  <!-- 4. Slide-Over Department & Touchpoint Inspector Drawer -->
+  <aside id="department-inspector" class="department-inspector" aria-label="Department Details Inspector"></aside>
+
+  <!-- 5. Custom Architecture JSON Editor Modal -->
+  <div class="modal-overlay" id="custom-modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Custom Enterprise Architecture Model</h2>
+      <p style="font-size: 12px; color: #94A3B8;">
+        Customize or paste any industry organizational hierarchy JSON. Define departments, core functions, inputs, outputs, cross-team relationships, and analytical framework touchpoints.
+      </p>
+      <textarea class="modal-textarea" id="custom-json-input" spellcheck="false"></textarea>
+      <div class="modal-actions">
+        <button class="btn" id="btn-modal-close">Cancel</button>
+        <button class="btn btn-primary" id="btn-modal-apply">Apply Architecture</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Bootstrap -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

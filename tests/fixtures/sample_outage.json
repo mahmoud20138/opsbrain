@@ -1,0 +1,40 @@
+{
+  "source": "payment-service",
+  "description": "Payment processing service experiencing elevated error rates and latency",
+  "metrics": {
+    "error_rate": 0.15,
+    "error_rate_baseline": 0.002,
+    "latency_p50_ms": 450,
+    "latency_p99_ms": 2500,
+    "latency_p99_baseline_ms": 200,
+    "requests_per_second": 1200,
+    "cpu_usage_percent": 78,
+    "memory_usage_percent": 92,
+    "db_connection_pool_active": 48,
+    "db_connection_pool_max": 50,
+    "db_query_time_avg_ms": 850,
+    "db_query_time_baseline_ms": 15,
+    "gc_pause_time_ms": 120,
+    "thread_count": 245
+  },
+  "logs": [
+    "2026-09-06T08:30:15Z ERROR [payment-service] Connection pool exhausted: unable to acquire connection within 5000ms",
+    "2026-09-06T08:30:16Z WARN  [payment-service] Slow query detected: SELECT * FROM transactions WHERE ... took 2340ms",
+    "2026-09-06T08:30:18Z ERROR [payment-service] java.sql.SQLException: Cannot get a connection, pool error Timeout waiting for idle object",
+    "2026-09-06T08:30:22Z ERROR [payment-service] Request timeout processing payment for order #ORD-29481",
+    "2026-09-06T08:30:25Z WARN  [payment-service] GC pause exceeded threshold: 120ms (threshold: 50ms)",
+    "2026-09-06T08:30:30Z ERROR [payment-service] Circuit breaker OPEN for downstream-inventory-service",
+    "2026-09-06T08:30:35Z INFO  [payment-service] Deployment v3.2.1 rolled out 2 hours ago",
+    "2026-09-06T08:30:40Z WARN  [db-monitor] PostgreSQL connection count: 248/250 (99.2% utilized)",
+    "2026-09-06T08:31:00Z ERROR [payment-service] OOM warning: heap usage at 91%, approaching limit"
+  ],
+  "thresholds": {
+    "error_rate_critical": 0.05,
+    "error_rate_warning": 0.01,
+    "latency_p99_critical_ms": 1000,
+    "latency_p99_warning_ms": 500,
+    "cpu_usage_critical_percent": 90,
+    "memory_usage_critical_percent": 95,
+    "db_pool_usage_warning_percent": 80
+  }
+}
